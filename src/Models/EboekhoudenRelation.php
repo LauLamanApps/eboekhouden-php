@@ -15,6 +15,7 @@ class EboekhoudenRelation implements Arrayable
     protected string $relation_type = 'B';
     protected ?DateTime $add_date = null;
     protected string $code = '';
+    protected bool $business = false;
     protected string $company = '';
     protected string $contact = '';
     protected string $gender = '';
@@ -28,15 +29,20 @@ class EboekhoudenRelation implements Arrayable
     protected string $postal_country = '';
     protected string $phone = '';
     protected string $cell_phone = '';
+    protected string $fax = '';
     protected string $email = '';
     protected string $site = '';
     protected string $notes = '';
     protected string $vat_number = '';
+    protected string $chamber_of_comerce_number;
     protected string $salutation = '';
     protected string $iban = '';
     protected string $bic = '';
     protected int $default_ledger_id = 0;
     protected bool $receive_newsletter = true;
+    protected array $userDefinedFields = [];
+    protected bool $member = false;
+    protected int $newsletterCount = 0;
 
     /**
      * EboekhoudenRelation constructor.
@@ -51,6 +57,7 @@ class EboekhoudenRelation implements Arrayable
                 ->setAddDate(new DateTime($item['AddDatum']))
                 ->setCode($item['Code'])
                 ->setCompany($item['Bedrijf'])
+                ->setSalutation($item['Aanhef'])
                 ->setContact($item['Contactpersoon'])
                 ->setGender($item['Geslacht'])
                 ->setAddress($item['Adres'])
@@ -63,11 +70,29 @@ class EboekhoudenRelation implements Arrayable
                 ->setPostalCountry($item['Land2'])
                 ->setPhone($item['Telefoon'])
                 ->setCellPhone($item['GSM'])
+                ->setFax($item['FAX'])
                 ->setEmail($item['Email'])
                 ->setSite($item['Site'])
                 ->setNotes($item['Notitie'])
                 ->setVatNumber($item['BTWNummer'])
+                ->setChamberOfComerceNumber($item['KvkNummer'])
+                ->setIBAN($item['IBAN'])
+                ->setBIC($item['BIC'])
                 ->setReceiveNewsletter(! ! ! $item['GeenEmail'])
+                ->setBusiness($item['BP'] === 'B')
+                ->setUserDefinedField(1,$item['Def1'])
+                ->setUserDefinedField(2,$item['Def2'])
+                ->setUserDefinedField(3,$item['Def3'])
+                ->setUserDefinedField(4,$item['Def4'])
+                ->setUserDefinedField(5,$item['Def5'])
+                ->setUserDefinedField(6,$item['Def6'])
+                ->setUserDefinedField(7,$item['Def7'])
+                ->setUserDefinedField(8,$item['Def8'])
+                ->setUserDefinedField(9,$item['Def9'])
+                ->setUserDefinedField(10,$item['Def10'])
+                ->setMember((bool)$item['LA'])
+                ->setNewsletterCount($item['NieuwsbriefgroepenCount'])
+                ->setDefaultLedgerId($item['Gb_ID'])
             ;
         }
     }
@@ -419,6 +444,24 @@ class EboekhoudenRelation implements Arrayable
     /**
      * @return string
      */
+    public function getFax(): string
+    {
+        return $this->fax;
+    }
+
+    /**
+     * @param string $fax
+     */
+    public function setFax(string $fax): self
+    {
+        $this->fax = $fax;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
     public function getEmail(): string
     {
         return $this->email;
@@ -599,6 +642,104 @@ class EboekhoudenRelation implements Arrayable
     public function setReceiveNewsletter(bool $receive_newsletter): EboekhoudenRelation
     {
         $this->receive_newsletter = $receive_newsletter;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBusiness(): bool
+    {
+        return $this->business;
+    }
+
+    /**
+     * @param bool $business
+     */
+    public function setBusiness(bool $business): self
+    {
+        $this->business = $business;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getChamberOfComerceNumber(): string
+    {
+        return $this->chamber_of_comerce_number;
+    }
+
+    /**
+     * @param string $chamber_of_comerce_number
+     */
+    public function setChamberOfComerceNumber(string $chamber_of_comerce_number): self
+    {
+        $this->chamber_of_comerce_number = $chamber_of_comerce_number;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUserDefinedFields(): array
+    {
+        return $this->userDefinedFields;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserDefinedField(int $fieldNo): ?string
+    {
+        return $this->userDefinedFields[$fieldNo] ?? null;
+    }
+
+    /**
+     * @param string $userDefinedFields
+     */
+    public function setUserDefinedField(int $fieldNo, string $userDefinedFields): self
+    {
+        $this->userDefinedFields[$fieldNo] = $userDefinedFields;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMember(): bool
+    {
+        return $this->member;
+    }
+
+    /**
+     * @param bool $member
+     */
+    public function setMember(bool $member): self
+    {
+        $this->member = $member;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNewsletterCount(): int
+    {
+        return $this->newsletterCount;
+    }
+
+    /**
+     * @param int $newsletterCount
+     */
+    public function setNewsletterCount(int $newsletterCount): self
+    {
+        $this->newsletterCount = $newsletterCount;
 
         return $this;
     }
